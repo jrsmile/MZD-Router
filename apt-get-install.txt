@@ -1,0 +1,10 @@
+wvdial
+wireless-tools
+vnstat
+watchdog
+usb-modeswitch
+usb-modeswitch-data
+usbutils
+nano
+hostapd
+dnsmasq

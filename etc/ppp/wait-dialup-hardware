@@ -1,0 +1,21 @@
+#!/bin/bash
+    #INTERFACE="/dev/$(head -1 /etc/ppp/options-mobile)"
+    INTERFACE="/dev/$1"
+    MAX_SECONDS_TIMEOUT=$2
+
+    dsec=$((${MAX_SECONDS_TIMEOUT} * 10))
+    for ((retry=0; retry < ${dsec}; retry++))
+    do
+        if [ -c ${INTERFACE} ]; then
+            echo "$0: OK existing required device ${INTERFACE} (in $((retry / 10)).$((100 * (retry % 10) / 10)) seconds)"
+            logger "$0: OK existing required device ${INTERFACE} (in $((retry / 10)).$((100 * (retry % 10) / 10)) seconds)"
+            break
+        else
+            sleep 0.1
+        fi
+    done
+    if [ ! -c ${INTERFACE} ]; then
+        echo "$0: ERROR timeout waiting for required device ${INTERFACE}"
+        logger "$0: ERROR timeout waiting for required device ${INTERFACE}"
+        exit 1
+    fi

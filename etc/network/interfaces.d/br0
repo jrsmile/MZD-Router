@@ -1,0 +1,10 @@
+auto br0
+
+iface br0 inet static
+    bridge_ports wlan0 eth0
+    address 192.168.178.14
+    netmask 255.255.255.0
+    network 192.168.178.0
+    ## isp router ip, 192.168.1.2 also runs DHCPD ##
+    gateway 192.168.178.1 
+    dns-nameservers 192.168.178.1

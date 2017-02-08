@@ -1,0 +1,23 @@
+# start 3G connection
+    # pre-up
+    #   wait for at max 20 seconds before connecting for the 3G stick to become connected at [ttyUSB0, ttyUSB1, ttyUSB2]
+    #   3G stick might not be available immediately
+    #   wait 30 more seconds for the 3G connection to become active
+
+    auto ppp0
+    iface ppp0 inet wvdial
+      provider Defaults
+      pre-up /etc/ppp/wait-dialup-hardware ttyUSB0 20
+      pre-up /etc/ppp/wait-dialup-hardware ttyUSB1 20
+      pre-up /etc/ppp/wait-dialup-hardware ttyUSB2 20
+      pre-up sleep 30
+      post-up echo "3G (ppp0) is online"
+      post-up /sbin/iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+      post-up /sbin/iptables -A FORWARD -i ppp0 -o br0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+      post-up /sbin/iptables -A FORWARD -i br0 -o ppp0 -j ACCEPT
+      post-up echo "Firewall: NAT LAN 2 WAN enabled"
+      post-down /sbin/iptables -F
+      post-down /sbin/iptables -t nat -F
+      post-down /sbin/iptables -t mangle -F
+      post-down /sbin/iptables -t raw -F
+      post-down /sbin/iptables -X
